@@ -31,7 +31,7 @@
       </button>
       <button
         type="button"
-        class="rounded-md border border-blue-700 bg-primary px-4 py-2 text-sm text-white shadow-sm hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-blue-700 dark:bg-primary dark:hover:bg-primary-dark"
+        class="rounded-md border border-amber-700 bg-primary px-4 py-2 text-sm text-white shadow-sm hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:border-amber-700 dark:bg-primary dark:hover:bg-primary-dark"
         (click)="exitGame()"
       >
         退出
@@ -43,8 +43,8 @@
 <main
   class="h-screen select-none overflow-auto font-sans text-gray-800 dark:text-gray-400"
 >
-  <div class="mx-auto flex min-h-screen max-w-7xl flex-col">
-    <!-- 头部 - 使用蓝绿色系 -->
+  <div class="relative mx-auto flex min-h-screen max-w-7xl flex-col">
+    <!-- 头部 - 使用暖色系 -->
     <header
       *ngIf="showHeader()"
       class="relative rounded-b-[3rem] bg-primary py-5 text-center text-white shadow-md dark:bg-primary-dark"
@@ -65,8 +65,8 @@
       </h1>
       <div class="absolute top-2 flex w-full justify-around">
         <div class="h-2 w-2 rounded-full bg-white/50"></div>
-        <div class="clip-star h-8 w-8 bg-yellow-300"></div>
-        <div class="clip-heart h-8 w-8 bg-purple-400"></div>
+        <div class="clip-star h-8 w-8 bg-yellow-400"></div>
+        <div class="clip-heart h-8 w-8 bg-red-400"></div>
       </div>
     </header>
 

@@ -2,12 +2,6 @@
   width: 100%;
   height: 100%;
   display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  /* 确保组件能完全填充父容器空间 */
-  min-height: 100%;
-  min-width: 100%;
 }
 .color-option {
   transition: transform 0.2s;
