@@ -26,6 +26,8 @@ export class DrawComponent implements OnInit, AfterViewInit {
   private drawing = false;
   private lastX = 0;
   private lastY = 0;
+  private drawingHistory: ImageData[] = [];
+  private currentHistoryIndex = -1;
 
   id = signal('');
   data = computed(() => {
@@ -108,7 +110,6 @@ export class DrawComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   selectColor(color: string) {
     this.activeColor.set(color);
     this.drawPreview();
@@ -131,26 +132,32 @@ export class DrawComponent implements OnInit, AfterViewInit {
       this.ctx.shadowBlur = 2;
 
       this.ctx.drawImage(this.image, 0, 0, this.canvasWidth(), this.canvasHeight());
+      this.saveDrawingState();
     }
     this.image.src = src;
   }
 
   @HostListener('document:mouseup', ['$event'])
   @HostListener('document:touchend', ['$event'])
-  onUp() {
-    this.drawing = false;
-    // 恢复纸张效果
-    const paperContainer = this.canvas.nativeElement.parentElement;
-    if (paperContainer && paperContainer.classList.contains('paper-container')) {
-      paperContainer.style.transform = 'perspective(1000px) rotateX(2deg)';
+  onUp(event: MouseEvent | TouchEvent) {
+    if (event.target === this.canvas.nativeElement) {
+      this.drawing = false;
+      // 恢复纸张效果
+      const paperContainer = this.canvas.nativeElement.parentElement;
+      if (paperContainer && paperContainer.classList.contains('paper-container')) {
+        paperContainer.style.transform = 'perspective(1000px) rotateX(2deg)';
+      }
+      this.saveDrawingState();
     }
+
   }
+
   @HostListener('document:mousemove', ['$event'])
   @HostListener('document:touchmove', ['$event'])
-  onMove(event: any) {
+  onMove(event: MouseEvent | TouchEvent) {
     if (this.drawing && event.target === this.canvas.nativeElement) {
       let x, y;
-      if (event.type === 'touchmove') {
+      if (event instanceof TouchEvent) {
         // 使用 getBoundingClientRect 获取画布相对于视口的位置
         const rect = this.canvas.nativeElement.getBoundingClientRect();
         x = (event.touches[0].clientX - rect.left);
@@ -178,10 +185,10 @@ export class DrawComponent implements OnInit, AfterViewInit {
 
   @HostListener('document:mousedown', ['$event'])
   @HostListener('document:touchstart', ['$event'])
-  onDown(event: any) {
+  onDown(event: MouseEvent | TouchEvent) {
     if (event.target === this.canvas.nativeElement) {
       this.drawing = true;
-      if (event.type === 'touchstart') {
+      if (event instanceof TouchEvent) {
         // 使用 getBoundingClientRect 获取画布相对于视口的位置
         const rect = this.canvas.nativeElement.getBoundingClientRect();
         this.lastX = (event.touches[0].clientX - rect.left);
@@ -193,11 +200,31 @@ export class DrawComponent implements OnInit, AfterViewInit {
     }
   }
 
+  undo() {
+    if (this.currentHistoryIndex > 0) {
+      this.currentHistoryIndex--;
+      const imageData = this.drawingHistory[this.currentHistoryIndex];
+      this.ctx.putImageData(imageData, 0, 0);
+    } else if (this.currentHistoryIndex === 0) {
+      this.currentHistoryIndex = -1;
+      this.ctx.clearRect(0, 0, this.canvasWidth(), this.canvasHeight());
+      if (this.image) {
+        this.ctx.drawImage(this.image, 0, 0, this.canvasWidth(), this.canvasHeight());
+      }
+    }
+  }
+
   private drawPreview() {
     this.showPreview.set(true);
     timer(1500).subscribe(() => {
       this.closePreview$.next(true);
     });
+  }
+  private saveDrawingState() {
+    const imageData = this.ctx.getImageData(0, 0, this.canvasWidth(), this.canvasHeight());
+    this.drawingHistory = this.drawingHistory.slice(0, this.currentHistoryIndex + 1);
+    this.drawingHistory.push(imageData);
+    this.currentHistoryIndex = this.drawingHistory.length - 1;
   }
 
 }
