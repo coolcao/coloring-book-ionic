@@ -41,20 +41,69 @@
     </div>
 
     <!-- 画笔大小 -->
-    <div class="flex items-center justify-center gap-4">
-      <span class="text-gray-700">画笔粗细:</span>
-      <input
-        [ngModel]="penWidth()"
-        (ngModelChange)="setLineWidth($event)"
-        type="range"
-        id="brush-size"
-        min="1"
-        max="35"
-        class="w-32"
-      />
-      <span id="brush-size-value" class="w-8 text-center">{{
-        penWidth()
-      }}</span>
+    <div class="flex items-center justify-between gap-4">
+      <button
+        (click)="undo()"
+        class="flex items-center justify-center rounded-2xl bg-gradient-to-r from-yellow-300 to-orange-300 px-4 py-2 text-gray-700 shadow-md transition-all duration-300 hover:scale-105 hover:from-yellow-400 hover:to-orange-400 hover:shadow-lg active:scale-95"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="h-6 w-6 animate-bounce"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+          />
+        </svg>
+        <span class="ml-2 text-lg font-bold">撤销</span>
+      </button>
+      <div class="space-x-2">
+        <span class="text-gray-700">画笔粗细:</span>
+        <input
+          [ngModel]="penWidth()"
+          (ngModelChange)="setLineWidth($event)"
+          type="range"
+          id="brush-size"
+          min="1"
+          max="35"
+          class="w-32"
+        />
+        <span id="brush-size-value" class="w-8 text-center">{{
+          penWidth()
+        }}</span>
+      </div>
+      <button
+        (click)="downloadDrawing()"
+        class="flex items-center justify-center rounded-2xl bg-gradient-to-r from-yellow-300 to-orange-300 px-4 py-2 text-gray-700 shadow-md transition-all duration-300 hover:scale-105 hover:from-yellow-400 hover:to-orange-400 hover:shadow-lg active:scale-95"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="h-6 w-6 animate-bounce"
+        >
+          <path
+            d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2zM12 7v7m-3-3l3 3 3-3"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+          />
+          <path
+            d="M7 17h10"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="ml-2 text-lg font-bold">保存</span>
+      </button>
     </div>
   </div>
 </div>

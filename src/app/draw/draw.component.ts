@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, computed, ElementRef, HostListener, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Directory, Filesystem } from '@capacitor/filesystem';
+import { Toast } from '@capacitor/toast';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, debounceTime, timer } from 'rxjs';
 import { AppStore } from 'src/app/store/app.store';
@@ -212,6 +214,41 @@ export class DrawComponent implements OnInit, AfterViewInit {
         this.ctx.drawImage(this.image, 0, 0, this.canvasWidth(), this.canvasHeight());
       }
     }
+  }
+
+  async downloadDrawing() {
+    if (this.store.platform() === 'web') {
+      await this.webDownload();
+    } else {
+      await this.appDownload();
+    }
+  }
+
+  private async appDownload() {
+    const canvas = this.canvas.nativeElement;
+    const image = canvas.toDataURL('image/png');
+    const base64Data = image.split(',')[1];
+    const fileName = `drawing_${new Date().getTime()}.png`;
+
+    await Filesystem.writeFile({
+      path: fileName,
+      data: base64Data,
+      directory: Directory.Documents
+    });
+
+    // 在Android上显示下载完成通知
+    await Toast.show({
+      text: '图片已保存到文档目录',
+      duration: 'short'
+    });
+  }
+  private async webDownload() {
+    const canvas = this.canvas.nativeElement;
+    const image = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = 'drawing.png';
+    link.click();
   }
 
   private drawPreview() {
