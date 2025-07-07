@@ -125,6 +125,11 @@ export class DrawComponent implements OnInit, AfterViewInit {
       this.canvas.nativeElement.height = this.canvasHeight();
       // 这里设置缩放，将图片缩放为画布大小
       this.ctx = this.canvas.nativeElement.getContext('2d')!;
+      // 铅笔效果
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+      this.ctx.shadowBlur = 2;
+
       this.ctx.drawImage(this.image, 0, 0, this.canvasWidth(), this.canvasHeight());
     }
     this.image.src = src;
@@ -157,9 +162,15 @@ export class DrawComponent implements OnInit, AfterViewInit {
       this.ctx.beginPath();
       this.ctx.moveTo(this.lastX, this.lastY);
       this.ctx.lineTo(x, y);
-      this.ctx.strokeStyle = this.activeColor();
+      this.ctx.strokeStyle = this.activeColor() + Math.floor(Math.random() * 51 + 50).toString(16).padStart(2, '0');
       this.ctx.lineWidth = this.penWidth();
       this.ctx.stroke();
+
+      this.ctx.globalAlpha = 0.7 + Math.random() * 0.3; // 随机透明度
+      this.ctx.shadowColor = 'rgba(0,0,0,0.1)';
+      this.ctx.shadowOffsetX = 1;
+      this.ctx.shadowOffsetY = 1;
+
       this.lastX = x;
       this.lastY = y;
     }
@@ -190,3 +201,4 @@ export class DrawComponent implements OnInit, AfterViewInit {
   }
 
 }
+
