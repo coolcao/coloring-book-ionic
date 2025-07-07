@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
     const updateStatusBarColor = (e: MediaQueryListEvent | MediaQueryList) => {
       const isDark = e.matches;
       StatusBar.setBackgroundColor({
-        color: isDark ? '#E27A4A' : '#C85A3A'
+        color: isDark ? '#E27A4A' : '#E27A4A'
       });
       StatusBar.setStyle({
         style: isDark ? Style.Dark : Style.Light
@@ -101,7 +101,7 @@ export class AppComponent implements OnInit {
   }
   updateStatusBarColor(darkMode: boolean) {
     StatusBar.setBackgroundColor({
-      color: darkMode ? '#E27A4A' : '#C85A3A'
+      color: darkMode ? '#E27A4A' : '#E27A4A'
     });
     StatusBar.setStyle({
       style: darkMode ? Style.Dark : Style.Light
