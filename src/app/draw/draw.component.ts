@@ -247,7 +247,7 @@ export class DrawComponent implements OnInit, AfterViewInit {
     const image = canvas.toDataURL('image/png');
     const link = document.createElement('a');
     link.href = image;
-    link.download = 'drawing.png';
+    link.download = `drawing_${new Date().getTime()}.png`;
     link.click();
   }
 
