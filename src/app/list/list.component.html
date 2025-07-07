@@ -1,0 +1,84 @@
+<div id="home-page" class="p-4">
+  <!-- 搜索框 -->
+  <div class="relative mb-4">
+    <input
+      type="text"
+      id="search-input"
+      placeholder="搜索涂色卡..."
+      class="w-full rounded-full border-2 border-primary/30 bg-blue-50 p-3 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20"
+    />
+    <button class="absolute right-3 top-3 text-primary">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <!-- 分类按钮 -->
+  <div class="mb-2 flex gap-3 overflow-x-auto py-4">
+    <button
+      class="category-btn whitespace-nowrap rounded-full bg-gray-100 px-4 py-2 text-gray-800"
+    >
+      全部
+    </button>
+    <button
+      class="category-btn whitespace-nowrap rounded-full bg-primary/10 px-4 py-2 text-primary-dark"
+    >
+      动物
+    </button>
+    <button
+      class="category-btn whitespace-nowrap rounded-full bg-teal-100 px-4 py-2 text-teal-800"
+    >
+      水果
+    </button>
+    <button
+      class="category-btn whitespace-nowrap rounded-full bg-indigo-100 px-4 py-2 text-indigo-800"
+    >
+      花草
+    </button>
+    <button
+      class="category-btn whitespace-nowrap rounded-full bg-cyan-100 px-4 py-2 text-cyan-800"
+    >
+      车辆
+    </button>
+    <button
+      class="category-btn whitespace-nowrap rounded-full bg-purple-100 px-4 py-2 text-purple-800"
+    >
+      卡通
+    </button>
+  </div>
+
+  <!-- 涂色卡列表 -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+    <!-- 涂色卡项 -->
+    @for (item of datas(); track $index) {
+      <div
+        [routerLink]="['/', 'draw', item.id]"
+        class="card-bg cursor-pointer overflow-hidden rounded-xl shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl"
+      >
+        <div class="flex items-center justify-center p-4">
+          <img
+            src="{{ item.image }}"
+            alt="{{ item.name }}"
+            class="h-auto w-full"
+          />
+        </div>
+        <div class="bg-primary/10 p-3 text-center">
+          <h3 class="text-lg font-bold">{{ item.name }}</h3>
+          <p class="text-sm text-gray-600">{{ item.category }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

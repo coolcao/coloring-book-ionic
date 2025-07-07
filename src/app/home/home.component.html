@@ -1,0 +1,21 @@
+<!-- 主要内容 -->
+<main class="flex flex-1 select-none flex-col items-center px-5">
+  <!-- 吉祥物 - 使用黄色系 -->
+  <div class="relative my-8 h-48 w-48">
+    <app-bear></app-bear>
+  </div>
+
+  <!-- 开始按钮 -->
+  <button
+    (click)="navigateToList()"
+    class="bg-primary text-white py-3 px-8 rounded-full text-xl font-bold shadow-lg hover:bg-primary-dark transition-colors"
+  >
+    🎨开始画画吧🎨
+  </button>
+
+  <!-- 模式选择 -->
+  <div class="mx-5 mb-6 mt-8 w-full"></div>
+
+  <!-- 功能菜单 -->
+  <div class="grid w-full max-w-4xl grid-cols-1 gap-5 md:grid-cols-3"></div>
+</main>

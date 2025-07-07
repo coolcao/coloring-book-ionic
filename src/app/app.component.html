@@ -1,0 +1,86 @@
+<!-- 添加退出游戏的Modal框 -->
+<div
+  *ngIf="showExit()"
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-50 backdrop-blur-md"
+  id="exitGameModal"
+  aria-labelledby="exitGameModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="relative mx-auto w-full max-w-sm rounded-xl bg-white p-6 text-gray-800 shadow-lg dark:bg-gray-900 dark:text-gray-200 sm:max-w-md"
+  >
+    <div class="flex items-start justify-between">
+      <h3
+        class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100"
+        id="exitGameModalLabel"
+      >
+        退出应用
+      </h3>
+    </div>
+    <div class="mt-4">
+      <p class="text-sm text-gray-500 dark:text-gray-300">确定要退出应用吗？</p>
+    </div>
+    <div class="mt-4 flex justify-end gap-2">
+      <button
+        type="button"
+        (click)="showExit.set(false)"
+        class="rounded-md border border-amber-300 bg-amber-300 px-4 py-2 text-sm text-gray-800 shadow-sm hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:border-amber-500 dark:bg-amber-500 dark:text-gray-800 dark:hover:bg-amber-600"
+        data-bs-dismiss="modal"
+      >
+        取消
+      </button>
+      <button
+        type="button"
+        class="rounded-md border border-blue-700 bg-primary px-4 py-2 text-sm text-white shadow-sm hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-blue-700 dark:bg-primary dark:hover:bg-primary-dark"
+        (click)="exitGame()"
+      >
+        退出
+      </button>
+    </div>
+  </div>
+</div>
+
+<main
+  class="h-screen select-none overflow-auto font-sans text-gray-800 dark:text-gray-400"
+>
+  <div class="mx-auto flex min-h-screen max-w-7xl flex-col">
+    <!-- 头部 - 使用蓝绿色系 -->
+    <header
+      *ngIf="showHeader()"
+      class="relative rounded-b-[3rem] bg-primary py-5 text-center text-white shadow-md dark:bg-primary-dark"
+    >
+      <button
+        *ngIf="showGoback()"
+        (click)="goBack()"
+        class="absolute left-8 top-6 z-50 cursor-pointer transition-transform duration-300 hover:scale-125"
+        aria-label="返回上一级"
+        role="button"
+      >
+        <span class="text-3xl text-amber-300">
+          <i class="fa-solid fa-arrow-left"></i>
+        </span>
+      </button>
+      <h1 class="m-0 text-4xl font-bold drop-shadow-md md:text-5xl">
+        宝宝涂色本
+      </h1>
+      <div class="absolute top-2 flex w-full justify-around">
+        <div class="h-2 w-2 rounded-full bg-white/50"></div>
+        <div class="clip-star h-8 w-8 bg-yellow-300"></div>
+        <div class="clip-heart h-8 w-8 bg-purple-400"></div>
+      </div>
+    </header>
+
+    <div
+      class="relative flex max-w-7xl flex-1 flex-col items-center justify-center py-2 sm:py-2 md:py-4"
+    >
+      <router-outlet />
+    </div>
+    <!-- 页脚 -->
+    <footer
+      *ngIf="showFooter()"
+      class="relative mt-0 rounded-t-[3rem] bg-primary py-5 text-center text-white dark:bg-primary-dark"
+    >
+      <p class="m-0">© 2025 宝宝涂色本 - 让绘画更简单</p>
+    </footer>
+  </div>
+</main>
