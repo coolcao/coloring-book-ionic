@@ -1,4 +1,4 @@
-import { Injectable, signal } from "@angular/core";
+import { computed, Injectable, signal } from "@angular/core";
 import { list } from "src/app/data";
 
 @Injectable({
@@ -15,6 +15,14 @@ export class AppStore {
   showFooter = this._showFooter.asReadonly();
   platform = this._platform.asReadonly();
   datas = this._datas.asReadonly();
+
+  categorys = computed(() => {
+    const categorys = new Set<string>();
+    this.datas().forEach(item => {
+      categorys.add(item.category);
+    });
+    return Array.from(categorys);
+  });
 
   setShowHeader(value: boolean) {
     this._showHeader.set(value);

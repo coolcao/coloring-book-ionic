@@ -80,12 +80,12 @@ export class DrawComponent implements OnInit, AfterViewInit {
   canvasHeight = computed(() => {
     const minScreen = Math.min(this.screenWidth(), this.screenHeight());
     if (minScreen > 768) {
-      return minScreen - 280;
+      return minScreen - 200;
     }
     if (minScreen > 480) {
       return minScreen - 100;
     }
-    return minScreen - 60;
+    return minScreen - 20;
   });
 
   activeColor = signal(this.colors[0].hex);
