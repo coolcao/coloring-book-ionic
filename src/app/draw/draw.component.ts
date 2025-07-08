@@ -70,12 +70,12 @@ export class DrawComponent implements OnInit, AfterViewInit {
   canvasWidth = computed(() => {
     const minScreen = Math.min(this.screenWidth(), this.screenHeight());
     if (minScreen > 768) {
-      return minScreen - 280;
+      return minScreen - 200;
     }
     if (minScreen > 480) {
       return minScreen - 100;
     }
-    return minScreen - 60;
+    return minScreen - 20;
   });
   canvasHeight = computed(() => {
     const minScreen = Math.min(this.screenWidth(), this.screenHeight());
@@ -175,7 +175,7 @@ export class DrawComponent implements OnInit, AfterViewInit {
       this.ctx.lineWidth = this.penWidth();
       this.ctx.stroke();
 
-      this.ctx.globalAlpha = 0.7 + Math.random() * 0.3; // 随机透明度
+      this.ctx.globalAlpha = 0.6 + Math.random() * 0.3; // 随机透明度
       this.ctx.shadowColor = 'rgba(0,0,0,0.1)';
       this.ctx.shadowOffsetX = 1;
       this.ctx.shadowOffsetY = 1;

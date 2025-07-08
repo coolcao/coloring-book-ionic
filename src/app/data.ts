@@ -2,8 +2,7 @@ export interface Data {
   id: string;
   name: string;
   image: string;
-  description: string;
-  category: 'animal' | 'food';
+  category: '动物' | '食物';
 }
 
 const list: Data[] = [
@@ -11,20 +10,62 @@ const list: Data[] = [
     id: 'rabbit',
     name: '小兔子',
     image: 'assets/images/rabbit.png',
-    description: '这是一只小兔子',
-    category: 'animal'
+    category: '动物'
   }, {
     id: 'dog',
     name: '小狗',
     image: 'assets/images/dog.png',
-    description: '这是一只小狗',
-    category: 'animal'
+    category: '动物'
   }, {
     id: 'cat',
     name: '小猫',
     image: 'assets/images/cat.png',
-    description: '这是一只小猫',
-    category: 'animal'
+    category: '动物'
+  }, {
+    id: 'orangutan',
+    name: ' orangutan',
+    image: 'assets/images/orangutan.png',
+    category: '动物'
+  }, {
+    id: 'bee',
+    name: '蜜蜂',
+    image: 'assets/images/bee.png',
+    category: '动物'
+  }, {
+    id: 'dinosaur',
+    name: '恐龙',
+    image: 'assets/images/dinosaur.png',
+    category: '动物'
+  }, {
+    id: 'lion',
+    name: '狮子',
+    image: 'assets/images/lion.png',
+    category: '动物'
+  }, {
+    id: 'panda',
+    name: '熊猫',
+    image: 'assets/images/panda.png',
+    category: '动物'
+  }, {
+    id: 'orangutan',
+    name: '大猩猩',
+    image: 'assets/images/orangutan.png',
+    category: '动物'
+  }, {
+    id: 'peacock',
+    name: '孔雀',
+    image: 'assets/images/peacock.png',
+    category: '动物'
+  }, {
+    id: 'snail',
+    name: '蜗牛',
+    image: 'assets/images/snail.png',
+    category: '动物'
+  }, {
+    id: 'squirrel',
+    name: '松鼠',
+    image: 'assets/images/squirrel.png',
+    category: '动物'
   }
 ];
 
