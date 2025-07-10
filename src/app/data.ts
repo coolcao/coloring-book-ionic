@@ -2,7 +2,7 @@ export interface Data {
   id: string;
   name: string;
   image: string;
-  category: '动物' | '水果' | '人物' | '玩具' | '植物';
+  category: '动物' | '水果' | '人物' | '玩具' | '植物' | '景观';
 }
 
 const list: Data[] = [
@@ -101,6 +101,11 @@ const list: Data[] = [
     name: '西瓜',
     image: 'assets/images/watermelon.webp',
     category: '水果'
+  }, {
+    id: 'snowman',
+    name: '雪人',
+    image: 'assets/images/snowman.webp',
+    category: '景观'
   }
 ];
 
