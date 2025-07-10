@@ -12,10 +12,12 @@ import { DrawComponent } from 'src/app/draw/draw.component';
 import { HomeComponent } from 'src/app/home/home.component';
 import { BearComponent } from 'src/app/components/bear/bear.component';
 import { PencilComponent } from 'src/app/components/pencil/pencil.component';
+import { FabricDrawComponent } from 'src/app/fabric-draw/fabric-draw.component';
+import { SpinnerComponent } from 'src/app/components/spinner/spinner.component';
 
 
 @NgModule({
-  declarations: [AppComponent, ListComponent, DrawComponent, HomeComponent, BearComponent, PencilComponent],
+  declarations: [AppComponent, ListComponent, DrawComponent, FabricDrawComponent, HomeComponent, BearComponent, PencilComponent, SpinnerComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
