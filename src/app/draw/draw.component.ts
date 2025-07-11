@@ -92,6 +92,7 @@ export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
   showPreview = signal(false);
   closePreview$ = new BehaviorSubject(false);
   brush!: CrayonBrush;
+  downloading = signal(false);
 
   constructor() {
     this.closePreviewSubscription = this.closePreview$.subscribe(() => {
@@ -176,11 +177,13 @@ export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async downloadDrawing() {
+    this.downloading.set(true);
     if (this.store.platform() === 'web') {
       await this.webDownload();
     } else {
       await this.appDownload();
     }
+    this.downloading.set(false);
   }
 
   private async appDownload() {
