@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, debounceTime, Subscription, timer } from 'rxjs';
 import { AppStore } from 'src/app/store/app.store';
 import { CrayonBrush } from './brushes/CrayonBrush';
+import { MarkerBrush } from 'src/app/draw/brushes/MarkerBrush';
 
 
 @Component({
@@ -91,7 +92,7 @@ export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   showPreview = signal(false);
   closePreview$ = new BehaviorSubject(false);
-  brush!: CrayonBrush;
+  brush!: MarkerBrush;
   downloading = signal(false);
 
   constructor() {
@@ -111,10 +112,9 @@ export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
       this.loadImg(this.data()?.image || '');
     }
 
-    const crayonBrush = new CrayonBrush(canvas, {
+    const crayonBrush = new MarkerBrush(canvas, {
       width: this.penWidth(),
       color: this.activeColor(),
-      inkAmount: 10,
     });
     this.brush = crayonBrush;
   }
