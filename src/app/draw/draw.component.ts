@@ -1,9 +1,11 @@
-import { AfterViewInit, Component, computed, ElementRef, HostListener, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, HostListener, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Toast } from '@capacitor/toast';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, debounceTime, timer } from 'rxjs';
+import { BehaviorSubject, debounceTime, Subscription, timer } from 'rxjs';
 import { AppStore } from 'src/app/store/app.store';
+import { CrayonBrush } from './brushes/CrayonBrush';
+
 
 @Component({
   selector: 'app-draw',
@@ -11,7 +13,7 @@ import { AppStore } from 'src/app/store/app.store';
   templateUrl: './draw.component.html',
   styleUrls: ['./draw.component.css'],
 })
-export class DrawComponent implements OnInit, AfterViewInit {
+export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   store = inject(AppStore);
   route = inject(ActivatedRoute);
@@ -25,11 +27,7 @@ export class DrawComponent implements OnInit, AfterViewInit {
 
   private ctx!: CanvasRenderingContext2D;
   private image!: HTMLImageElement;
-  private drawing = false;
-  private lastX = 0;
-  private lastY = 0;
-  private drawingHistory: ImageData[] = [];
-  private currentHistoryIndex = -1;
+  private closePreviewSubscription!: Subscription;
 
   id = signal('');
   data = computed(() => {
@@ -93,9 +91,10 @@ export class DrawComponent implements OnInit, AfterViewInit {
 
   showPreview = signal(false);
   closePreview$ = new BehaviorSubject(false);
+  brush!: CrayonBrush;
 
   constructor() {
-    this.closePreview$.pipe(debounceTime(1000)).subscribe(() => {
+    this.closePreviewSubscription = this.closePreview$.subscribe(() => {
       this.showPreview.set(false);
     });
   }
@@ -110,14 +109,26 @@ export class DrawComponent implements OnInit, AfterViewInit {
     if (context) {
       this.loadImg(this.data()?.image || '');
     }
+
+    const crayonBrush = new CrayonBrush(canvas, {
+      width: this.penWidth(),
+      color: this.activeColor(),
+      inkAmount: 10,
+    });
+    this.brush = crayonBrush;
+  }
+  ngOnDestroy() {
+    this.closePreviewSubscription.unsubscribe();
   }
 
   selectColor(color: string) {
     this.activeColor.set(color);
+    this.brush.setColor(color);
     this.drawPreview();
   }
   setLineWidth(width: number) {
     this.penWidth.set(width);
+    this.brush.setWidth(width);
     this.drawPreview();
   }
 
@@ -128,13 +139,7 @@ export class DrawComponent implements OnInit, AfterViewInit {
       this.canvas.nativeElement.height = this.canvasHeight();
       // 这里设置缩放，将图片缩放为画布大小
       this.ctx = this.canvas.nativeElement.getContext('2d')!;
-      // 铅笔效果
-      this.ctx.lineCap = 'round';
-      this.ctx.lineJoin = 'round';
-      this.ctx.shadowBlur = 2;
-
       this.ctx.drawImage(this.image, 0, 0, this.canvasWidth(), this.canvasHeight());
-      this.saveDrawingState();
     }
     this.image.src = src;
   }
@@ -143,45 +148,16 @@ export class DrawComponent implements OnInit, AfterViewInit {
   @HostListener('document:touchend', ['$event'])
   onUp(event: MouseEvent | TouchEvent) {
     if (event.target === this.canvas.nativeElement) {
-      this.drawing = false;
-      // 恢复纸张效果
-      const paperContainer = this.canvas.nativeElement.parentElement;
-      if (paperContainer && paperContainer.classList.contains('paper-container')) {
-        paperContainer.style.transform = 'perspective(1000px) rotateX(2deg)';
-      }
-      this.saveDrawingState();
+      this.brush.onMouseUp();
     }
-
   }
 
   @HostListener('document:mousemove', ['$event'])
   @HostListener('document:touchmove', ['$event'])
   onMove(event: MouseEvent | TouchEvent) {
-    if (this.drawing && event.target === this.canvas.nativeElement) {
-      let x, y;
-      if (event instanceof TouchEvent) {
-        // 使用 getBoundingClientRect 获取画布相对于视口的位置
-        const rect = this.canvas.nativeElement.getBoundingClientRect();
-        x = (event.touches[0].clientX - rect.left);
-        y = (event.touches[0].clientY - rect.top);
-      } else {
-        x = event.offsetX;
-        y = event.offsetY;
-      }
-      this.ctx.beginPath();
-      this.ctx.moveTo(this.lastX, this.lastY);
-      this.ctx.lineTo(x, y);
-      this.ctx.strokeStyle = this.activeColor() + Math.floor(Math.random() * 51 + 50).toString(16).padStart(2, '0');
-      this.ctx.lineWidth = this.penWidth();
-      this.ctx.stroke();
-
-      this.ctx.globalAlpha = 0.6 + Math.random() * 0.3; // 随机透明度
-      this.ctx.shadowColor = 'rgba(0,0,0,0.1)';
-      this.ctx.shadowOffsetX = 1;
-      this.ctx.shadowOffsetY = 1;
-
-      this.lastX = x;
-      this.lastY = y;
+    if (event.target === this.canvas.nativeElement && this.brush.isDrawing()) {
+      const rect = this.canvas.nativeElement.getBoundingClientRect();
+      this.brush.onMouseMove(event instanceof MouseEvent ? event.clientX - rect.left : event.touches[0].clientX - rect.left, event instanceof MouseEvent ? event.clientY - rect.top : event.touches[0].clientY - rect.top);
     }
   }
 
@@ -189,31 +165,14 @@ export class DrawComponent implements OnInit, AfterViewInit {
   @HostListener('document:touchstart', ['$event'])
   onDown(event: MouseEvent | TouchEvent) {
     if (event.target === this.canvas.nativeElement) {
-      this.drawing = true;
-      if (event instanceof TouchEvent) {
-        // 使用 getBoundingClientRect 获取画布相对于视口的位置
-        const rect = this.canvas.nativeElement.getBoundingClientRect();
-        this.lastX = (event.touches[0].clientX - rect.left);
-        this.lastY = (event.touches[0].clientY - rect.top);
-      } else {
-        this.lastX = event.offsetX;
-        this.lastY = event.offsetY;
-      }
+      const rect = this.canvas.nativeElement.getBoundingClientRect();
+      this.brush.onMouseDown(event instanceof MouseEvent ? event.clientX - rect.left : event.touches[0].clientX - rect.left, event instanceof MouseEvent ? event.clientY - rect.top : event.touches[0].clientY - rect.top);
     }
+
   }
 
   undo() {
-    if (this.currentHistoryIndex > 0) {
-      this.currentHistoryIndex--;
-      const imageData = this.drawingHistory[this.currentHistoryIndex];
-      this.ctx.putImageData(imageData, 0, 0);
-    } else if (this.currentHistoryIndex === 0) {
-      this.currentHistoryIndex = -1;
-      this.ctx.clearRect(0, 0, this.canvasWidth(), this.canvasHeight());
-      if (this.image) {
-        this.ctx.drawImage(this.image, 0, 0, this.canvasWidth(), this.canvasHeight());
-      }
-    }
+    this.brush.undo();
   }
 
   async downloadDrawing() {
@@ -256,12 +215,6 @@ export class DrawComponent implements OnInit, AfterViewInit {
     timer(1500).subscribe(() => {
       this.closePreview$.next(true);
     });
-  }
-  private saveDrawingState() {
-    const imageData = this.ctx.getImageData(0, 0, this.canvasWidth(), this.canvasHeight());
-    this.drawingHistory = this.drawingHistory.slice(0, this.currentHistoryIndex + 1);
-    this.drawingHistory.push(imageData);
-    this.currentHistoryIndex = this.drawingHistory.length - 1;
   }
 
 }

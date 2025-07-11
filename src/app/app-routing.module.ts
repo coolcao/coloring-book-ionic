@@ -9,8 +9,8 @@ const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'list', component: ListComponent },
-  // { path: 'draw/:id', component: DrawComponent },
-  { path: 'draw/:id', component: FabricDrawComponent },
+  { path: 'draw/:id', component: DrawComponent },
+  // { path: 'draw/:id', component: FabricDrawComponent },
   { path: '**', redirectTo: '/home' }
 ];
 
