@@ -74,7 +74,7 @@ class MarkerBrush {
   public onMouseDown(x: number, y: number): void {
     // 开始新笔画前保存状态
     this._saveState();
-    
+
     this._isDrawing = true;
     this._lastPoint = { x, y };
     this.ctx.strokeStyle = this.color;
@@ -151,6 +151,10 @@ class MarkerBrush {
     }
   }
 
+  public type(): string {
+    return 'marker';
+  }
+
   private _saveState(): void {
     // 限制历史记录数量
     if (this._drawingHistory.length >= this._maxHistorySteps) {
@@ -160,6 +164,7 @@ class MarkerBrush {
     const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     this._drawingHistory.push(imageData);
   }
+
 }
 
 // Export types and class for module usage

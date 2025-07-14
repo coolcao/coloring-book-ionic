@@ -50,7 +50,7 @@ export class CrayonBrush {
     // CrayonBrush specific properties with defaults
     this._baseWidth = options.baseWidth ?? 1;
     this._inkAmount = options.inkAmount ?? 10;
-    this._sep = options.sep ?? 5;
+    this._sep = options.sep ?? 3;
 
     // 记录初始状态
     this._saveState();
@@ -126,6 +126,9 @@ export class CrayonBrush {
     if (previousState) {
       this.ctx.putImageData(previousState, 0, 0);
     }
+  }
+  public type(): string {
+    return 'crayon';
   }
   // 保存当前画布状态
   private _saveState(): void {

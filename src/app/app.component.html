@@ -41,7 +41,7 @@
 </div>
 
 <main
-  class="h-screen select-none overflow-auto font-sans text-gray-800 dark:text-gray-400"
+  class="h-screen select-none overflow-auto bg-amber-50 font-sans text-gray-800 dark:text-gray-400"
 >
   <div class="relative mx-auto flex min-h-screen max-w-7xl flex-col">
     <!-- 头部 - 使用暖色系 -->
@@ -73,7 +73,12 @@
     <div
       class="relative flex max-w-7xl flex-1 flex-col items-center justify-center py-2 sm:py-2 md:py-4"
     >
-      <router-outlet />
+      <div class="h-full w-full landscape:hidden">
+        <router-outlet />
+      </div>
+      <div class="flex items-center justify-center text-2xl portrait:hidden">
+        暂不支持横屏，请竖屏使用
+      </div>
     </div>
     <!-- 页脚 -->
     <footer

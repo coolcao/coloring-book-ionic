@@ -2,10 +2,11 @@ import { AfterViewInit, Component, computed, ElementRef, HostListener, inject, O
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Toast } from '@capacitor/toast';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, debounceTime, Subscription, timer } from 'rxjs';
+import { BehaviorSubject, Subscription, timer } from 'rxjs';
 import { AppStore } from 'src/app/store/app.store';
 import { CrayonBrush } from './brushes/CrayonBrush';
 import { MarkerBrush } from 'src/app/draw/brushes/MarkerBrush';
+import { BrushType, CanvasStore } from 'src/app/store/canvas.store';
 
 
 @Component({
@@ -17,9 +18,11 @@ import { MarkerBrush } from 'src/app/draw/brushes/MarkerBrush';
 export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   store = inject(AppStore);
+  canvasStore = inject(CanvasStore);
   route = inject(ActivatedRoute);
 
   datas = this.store.datas;
+  BrushType = BrushType;
 
   @ViewChild('canvas')
   canvas!: ElementRef<HTMLCanvasElement>;
@@ -87,13 +90,22 @@ export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
     return minScreen - 20;
   });
 
-  activeColor = signal(this.colors[0].hex);
-  penWidth = signal(10);
+  activeColor = this.canvasStore.activeColor;
+  penWidth = this.canvasStore.penWidth;
 
   showPreview = signal(false);
   closePreview$ = new BehaviorSubject(false);
-  brush!: MarkerBrush;
   downloading = signal(false);
+
+  brushType = this.canvasStore.brushType;
+
+  showBrushSettings = signal(false);
+
+  private brush = this.canvasStore.brush;
+
+  toggleBrushSettings() {
+    this.showBrushSettings.update(v => !v);
+  }
 
   constructor() {
     this.closePreviewSubscription = this.closePreview$.subscribe(() => {
@@ -111,25 +123,18 @@ export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
     if (context) {
       this.loadImg(this.data()?.image || '');
     }
-
-    const crayonBrush = new MarkerBrush(canvas, {
-      width: this.penWidth(),
-      color: this.activeColor(),
-    });
-    this.brush = crayonBrush;
+    this.canvasStore.initCanvas(canvas);
   }
   ngOnDestroy() {
     this.closePreviewSubscription.unsubscribe();
   }
 
   selectColor(color: string) {
-    this.activeColor.set(color);
-    this.brush.setColor(color);
+    this.canvasStore.setActiveColor(color);
     this.drawPreview();
   }
-  setLineWidth(width: number) {
-    this.penWidth.set(width);
-    this.brush.setWidth(width);
+  setPenWidth(width: number) {
+    this.canvasStore.setPenWidth(width);
     this.drawPreview();
   }
 
@@ -138,7 +143,6 @@ export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
     this.image.onload = () => {
       this.canvas.nativeElement.width = this.canvasWidth();
       this.canvas.nativeElement.height = this.canvasHeight();
-      // 这里设置缩放，将图片缩放为画布大小
       this.ctx = this.canvas.nativeElement.getContext('2d')!;
       this.ctx.drawImage(this.image, 0, 0, this.canvasWidth(), this.canvasHeight());
     }
@@ -149,16 +153,21 @@ export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostListener('document:touchend', ['$event'])
   onUp(event: MouseEvent | TouchEvent) {
     if (event.target === this.canvas.nativeElement) {
-      this.brush.onMouseUp();
+      this.brush()?.onMouseUp();
     }
   }
 
   @HostListener('document:mousemove', ['$event'])
   @HostListener('document:touchmove', ['$event'])
   onMove(event: MouseEvent | TouchEvent) {
-    if (event.target === this.canvas.nativeElement && this.brush.isDrawing()) {
+    if (event.target === this.canvas.nativeElement && this.brush()?.isDrawing()) {
       const rect = this.canvas.nativeElement.getBoundingClientRect();
-      this.brush.onMouseMove(event instanceof MouseEvent ? event.clientX - rect.left : event.touches[0].clientX - rect.left, event instanceof MouseEvent ? event.clientY - rect.top : event.touches[0].clientY - rect.top);
+
+      if (event instanceof MouseEvent) {
+        this.brush()!.onMouseMove(event.clientX - rect.left, event.clientY - rect.top);
+      } else {
+        this.brush()!.onMouseMove(event.touches[0].clientX - rect.left, event.touches[0].clientY - rect.top);
+      }
     }
   }
 
@@ -167,13 +176,22 @@ export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
   onDown(event: MouseEvent | TouchEvent) {
     if (event.target === this.canvas.nativeElement) {
       const rect = this.canvas.nativeElement.getBoundingClientRect();
-      this.brush.onMouseDown(event instanceof MouseEvent ? event.clientX - rect.left : event.touches[0].clientX - rect.left, event instanceof MouseEvent ? event.clientY - rect.top : event.touches[0].clientY - rect.top);
+      if (event instanceof MouseEvent) {
+        this.brush()!.onMouseDown(event.clientX - rect.left, event.clientY - rect.top);
+      }
+      if (event instanceof TouchEvent) {
+        this.brush()!.onMouseDown(event.touches[0].clientX - rect.left, event.touches[0].clientY - rect.top);
+      }
+      this.canvasStore.saveState();
     }
-
   }
 
   undo() {
-    this.brush.undo();
+    this.canvasStore.undo();
+  }
+
+  changeBrush(brush: BrushType) {
+    this.canvasStore.setBrushType(brush)
   }
 
   async downloadDrawing() {
