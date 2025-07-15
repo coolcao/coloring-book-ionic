@@ -2,7 +2,7 @@ export interface Data {
   id: string;
   name: string;
   image: string;
-  category: '动物' | '水果' | '人物' | '玩具' | '植物' | '景观';
+  category: '动物' | '水果' | '人物' | '植物' | '家具';
 }
 
 const list: Data[] = [
@@ -75,7 +75,7 @@ const list: Data[] = [
     id: 'bumblebee',
     name: '大黄蜂',
     image: 'assets/images/bumblebee.png',
-    category: '玩具'
+    category: '人物'
   }, {
     id: 'lotus',
     name: '莲花',
@@ -105,7 +105,102 @@ const list: Data[] = [
     id: 'snowman',
     name: '雪人',
     image: 'assets/images/snowman.webp',
-    category: '景观'
+    category: '人物'
+  }, {
+    id: 'superman',
+    name: '超人',
+    image: 'assets/images/superman.webp',
+    category: '人物'
+  }, {
+    id: 'apple2',
+    name: '苹果',
+    image: 'assets/images/apple2.webp',
+    category: '水果'
+  }, {
+    id: 'chair',
+    name: '椅子',
+    image: 'assets/images/chair.webp',
+    category: '家具'
+  }, {
+    id: 'dog2',
+    name: '小狗',
+    image: 'assets/images/dog2.webp',
+    category: '动物'
+  }, {
+    id: 'doraemon',
+    name: '哆啦A梦',
+    image: 'assets/images/doraemon.webp',
+    category: '人物'
+  }, {
+    id: 'hellokitty',
+    name: 'hello kitty',
+    image: 'assets/images/hellokitty.webp',
+    category: '人物'
+  }, {
+    id: 'peppapig',
+    name: '小猪佩奇',
+    image: 'assets/images/PeppaPig.webp',
+    category: '人物'
+  }, {
+    id: 'pikachu',
+    name: '皮卡丘',
+    image: 'assets/images/pikachu.webp',
+    category: '人物'
+  }, {
+    id: 'plant',
+    name: '植物',
+    image: 'assets/images/plant.webp',
+    category: '植物'
+  }, {
+    id: 'umbrella',
+    name: '雨伞',
+    image: 'assets/images/umbrella.webp',
+    category: '植物'
+  }, {
+    id: 'cherry',
+    name: '樱桃',
+    image: 'assets/images/cherry.webp',
+    category: '水果'
+  }, {
+    id: 'grape2',
+    name: '葡萄',
+    image: 'assets/images/grape2.webp',
+    category: '水果'
+  }, {
+    id: 'mango',
+    name: '芒果',
+    image: 'assets/images/mango.webp',
+    category: '水果'
+  }, {
+    id: 'orange',
+    name: '橘子',
+    image: 'assets/images/orange.webp',
+    category: '水果'
+  }, {
+    id: 'peach',
+    name: '桃子',
+    image: 'assets/images/peach.webp',
+    category: '水果'
+  }, {
+    id: 'pear',
+    name: '梨子',
+    image: 'assets/images/pear.webp',
+    category: '水果'
+  }, {
+    id: 'persimmon',
+    name: '柿子',
+    image: 'assets/images/persimmon.webp',
+    category: '水果'
+  }, {
+    id: 'pineapple',
+    name: '菠萝',
+    image: 'assets/images/pineapple.webp',
+    category: '水果'
+  }, {
+    id: 'strawberry',
+    name: '草莓',
+    image: 'assets/images/strawberry.webp',
+    category: '水果'
   }
 ];
 
