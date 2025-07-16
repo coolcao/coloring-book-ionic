@@ -44,6 +44,13 @@
     </button>
 
     <button
+      (click)="clear()"
+      class="flex items-center justify-center rounded-2xl bg-amber-100 px-4 py-2 text-amber-800 transition-all duration-300 hover:bg-amber-200 active:scale-95"
+    >
+      <i class="fa-solid fa-broom text-2xl"></i>
+    </button>
+
+    <button
       (click)="toggleBrushSettings()"
       [ngClass]="{
         'border-2 border-solid border-amber-800': showBrushSettings(),

@@ -103,6 +103,14 @@ export class CanvasStore {
     this.saveState();
   }
 
+  clear() {
+    if (!this.ctx()) {
+      return;
+    }
+    this.ctx()?.clearRect(0, 0, this.canvas()!.width, this.canvas()!.height);
+    this._drawHistory.set([]);
+  }
+
   undo() {
     if (this.drawHistory().length <= 1) {
       return;

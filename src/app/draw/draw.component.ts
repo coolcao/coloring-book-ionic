@@ -4,8 +4,6 @@ import { Toast } from '@capacitor/toast';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subscription, timer } from 'rxjs';
 import { AppStore } from 'src/app/store/app.store';
-import { CrayonBrush } from './brushes/CrayonBrush';
-import { MarkerBrush } from 'src/app/draw/brushes/MarkerBrush';
 import { BrushType, CanvasStore } from 'src/app/store/canvas.store';
 
 
@@ -192,6 +190,13 @@ export class DrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   changeBrush(brush: BrushType) {
     this.canvasStore.setBrushType(brush)
+  }
+
+  clear() {
+    this.canvasStore.clear();
+    this.ctx.reset();
+    this.loadImg(this.data()?.image || '');
+    this.canvasStore.initCanvas(this.canvas.nativeElement);
   }
 
   async downloadDrawing() {

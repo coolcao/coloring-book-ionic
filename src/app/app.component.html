@@ -104,10 +104,12 @@
         class="clip-heart absolute bottom-[40%] right-[20%] h-8 w-8 bg-pink-300 bg-opacity-30"
       ></div>
 
-      <div class="h-full w-full landscape:hidden">
+      <div class="h-full w-full flex-1 landscape:hidden">
         <router-outlet />
       </div>
-      <div class="flex items-center justify-center text-2xl portrait:hidden">
+      <div
+        class="flex flex-1 items-center justify-center text-2xl portrait:hidden"
+      >
         暂不支持横屏，请竖屏使用
       </div>
     </div>
